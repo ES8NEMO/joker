@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dev – Panneau de contrôle</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<script src="../common.js"></script>
+<style>
+  :root { --ink:#1d2330; --mute:#6b7385; --line:#e3e6ee; --panel:#fff; --page:#f2f4f8; --accent:#2f5bea; --danger:#c93a3a; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--page); color:var(--ink); font-size:15px; }
+  header { background:var(--ink); color:#fff; padding:14px 20px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+  header h1 { font-size:17px; margin:0; font-weight:600; }
+  header .links a { color:#cfd6ea; margin-left:14px; text-decoration:none; font-size:14px; }
+  header .links a:hover { color:#fff; }
+  .mode { font-size:12px; padding:3px 9px; border-radius:99px; background:#3a4256; margin-left:10px; }
+  .mode.demo { background:#8a5a00; }
+  main { max-width:980px; margin:0 auto; padding:20px; display:grid; gap:22px; }
+  section.card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px; }
+  h2 { font-size:16px; margin:0 0 14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
+  label { display:block; font-size:13px; color:var(--mute); margin-bottom:5px; }
+  input[type=text], input[type=number], select, textarea { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:7px; font:inherit; background:#fff; color:var(--ink); }
+  textarea { resize:vertical; min-height:64px; }
+  input[type=color] { width:100%; height:40px; padding:2px; border:1px solid var(--line); border-radius:7px; background:#fff; cursor:pointer; }
+  button { font:inherit; cursor:pointer; border-radius:7px; border:1px solid var(--line); background:#fff; padding:8px 13px; color:var(--ink); }
+  button:hover { background:#f5f7fb; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.primary:hover { background:#2449c4; }
+  button.danger { color:var(--danger); }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .spread { justify-content:space-between; }
+  .logo-prev { width:56px; height:56px; border-radius:8px; border:1px solid var(--line); object-fit:cover; background:#f0f2f7; }
+  .empty { color:var(--mute); padding:18px; text-align:center; border:1px dashed var(--line); border-radius:8px; }
+  .menu { border:1px solid var(--line); border-radius:10px; margin-bottom:14px; overflow:hidden; }
+  .menu-head { padding:12px 14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; border-left:8px solid var(--c, #999); background:#fafbfd; }
+  .menu-head b { font-size:16px; }
+  .swatches { display:flex; gap:6px; align-items:center; font-size:12px; color:var(--mute); }
+  .sw { width:18px; height:18px; border-radius:50%; border:1px solid var(--line); display:inline-block; }
+  .plates { padding:10px 14px 14px; }
+  .plate { display:flex; gap:12px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line); }
+  .plate:last-child { border-bottom:0; }
+  .plate img, .plate .noimg { width:54px; height:54px; border-radius:8px; object-fit:cover; background:#eceff5; flex:none; }
+  .plate .info { flex:1; min-width:0; }
+  .plate .info small { color:var(--mute); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .plate.off .info { opacity:.5; }
+  .tag { font-size:11px; padding:2px 7px; border-radius:99px; background:#fde9e9; color:var(--danger); margin-left:6px; }
+  .modal-bg { position:fixed; inset:0; background:rgba(15,20,35,.55); display:none; align-items:center; justify-content:center; padding:16px; z-index:50; }
+  .modal-bg.open { display:flex; }
+  .modal { background:#fff; border-radius:12px; width:100%; max-width:460px; max-height:92vh; overflow:auto; padding:20px; }
+  .modal h3 { margin:0 0 14px; }
+  .field { margin-bottom:12px; }
+  .check { display:flex; gap:8px; align-items:center; font-size:14px; color:var(--ink); }
+  .check input { width:auto; }
+  .hint { font-size:12px; color:var(--mute); margin-top:4px; }
+  .linkbox { font-size:13px; background:#f5f7fb; border:1px solid var(--line); border-radius:7px; padding:8px 10px; word-break:break-all; }
+  @media (prefers-reduced-motion:reduce){ * { transition:none !important; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row"><h1>Panneau Dev</h1><span id="mode" class="mode"></span></div>
+  <div class="links">
+    <a id="lnkClient" target="_blank">Voir le menu client</a>
+    <a id="lnkChef" target="_blank">Écran chef</a>
+    <a href="#" onclick="logout();return false">Déconnexion</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== DESIGN GLOBAL ===== -->
+  <section class="card">
+    <h2>Design du site (tout le menu)</h2>
+    <div class="grid">
+      <div><label>Nom du café</label><input type="text" id="sName"></div>
+      <div><label>Couleur de fond (page)</label><input type="color" id="sBg"></div>
+      <div><label>Couleur du texte</label><input type="color" id="sText"></div>
+      <div><label>Couleur principale (boutons)</label><input type="color" id="sPrimary"></div>
+      <div><label>Police</label><select id="sFont"></select></div>
+      <div><label>Affichage des plats</label>
+        <select id="sLayout"><option value="grid">Grille (avec photos)</option><option value="list">Liste</option></select>
+      </div>
+    </div>
+    <div class="row" style="margin-top:16px">
+      <img id="logoPrev" class="logo-prev" alt="logo" style="display:none">
+      <div>
+        <label>Logo</label>
+        <input type="file" id="sLogo" accept="image/*">
+      </div>
+      <button id="btnRmLogo" class="danger" style="display:none">Supprimer le logo</button>
+    </div>
+    <p class="hint">Kolchi kaytsejjel automatiquement. Iftah "Voir le menu client" f tab akhra w ghadi tchof tbdil f nefs lw9t.</p>
+  </section>
+
+  <!-- ===== MENUS ===== -->
+  <section class="card">
+    <div class="row spread" style="margin-bottom:14px">
+      <h2 style="margin:0">Menus et plats</h2>
+      <button class="primary" id="btnAddMenu">+ Ajouter un menu</button>
+    </div>
+    <div id="menus"></div>
+  </section>
+
+  <!-- ===== TABLES ===== -->
+  <section class="card">
+    <h2>Liens par table</h2>
+    <div class="row">
+      <div style="width:120px"><label>Numéro de table</label><input type="number" id="tblNum" min="1" value="1"></div>
+    </div>
+    <p class="hint">Had lien dirou QR code (b ay générateur QR) w tprintih l table.</p>
+    <div class="linkbox" id="tblLink"></div>
+  </section>
+
+</main>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="mTitle"></h3>
+    <div id="mBody"></div>
+    <div class="row spread" style="margin-top:16px">
+      <button id="mCancel">Annuler</button>
+      <button class="primary" id="mSave">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const state = { menus: [], plates: [], settings: { ...DEFAULT_SETTINGS } };
+
+// ---------- liens ----------
+const q = CAFE_ID !== (window.DEFAULT_CAFE_ID || 'demo') ? `?cafe=${encodeURIComponent(CAFE_ID)}` : '';
+const base = new URL('../', location.href).href;
+$('lnkClient').href = base + q;
+$('lnkChef').href = base + 'shef/' + q;
+$('mode').textContent = DB.mode === 'firebase' ? 'Firebase connecté' : 'Mode démo (localStorage)';
+$('mode').classList.add(DB.mode === 'firebase' ? 'live' : 'demo');
+function tblLink() {
+  const sep = q ? '&' : '?';
+  $('tblLink').textContent = `${base}${q}${sep}table=${$('tblNum').value || 1}`;
+}
+$('tblNum').oninput = tblLink; tblLink();
+
+// ---------- design global ----------
+FONTS.forEach(f => { const o = document.createElement('option'); o.value = f; o.textContent = f; $('sFont').appendChild(o); });
+
+const bindings = { sName:'name', sBg:'bg', sText:'text', sPrimary:'primary', sFont:'font', sLayout:'layout' };
+Object.entries(bindings).forEach(([id, key]) => {
+  $(id).addEventListener('change', () => DB.set('settings', 'site', { [key]: $(id).value }));
+});
+$('sLogo').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  DB.set('settings', 'site', { logo: await imageToDataURL(f, 300) });
+});
+$('btnRmLogo').onclick = () => DB.set('settings', 'site', { logo: '' });
+
+function renderSettings() {
+  const s = state.settings;
+  Object.entries(bindings).forEach(([id, key]) => { if (document.activeElement !== $(id)) $(id).value = s[key]; });
+  $('logoPrev').style.display = $('btnRmLogo').style.display = s.logo ? '' : 'none';
+  if (s.logo) $('logoPrev').src = s.logo;
+}
+
+// ---------- menus + plats ----------
+function renderMenus() {
+  const box = $('menus');
+  if (!state.menus.length) {
+    box.innerHTML = '<div class="empty">Ma kayn ta menu. Dghet "+ Ajouter un menu" (ex: Boissons, Pizzas, Desserts).</div>';
+    return;
+  }
+  box.innerHTML = state.menus.map((m, i) => {
+    const plates = state.plates.filter(p => p.menuId === m.id).sort((a, b) => (a.order || 0) - (b.order || 0));
+    return `
+    <div class="menu" style="--c:${esc(m.accent || '#999')}">
+      <div class="menu-head">
+        <div class="row">
+          <b>${esc(m.name)}</b>
+          <span class="swatches"><span class="sw" style="background:${esc(m.accent || '#999')}" title="Couleur"></span>
+            ${m.bg ? `<span class="sw" style="background:${esc(m.bg)}" title="Fond"></span>` : '<span>fond global</span>'}</span>
+        </div>
+        <div class="row">
+          <button data-act="up" data-id="${m.id}" ${i === 0 ? 'disabled' : ''} title="Monter">↑</button>
+          <button data-act="down" data-id="${m.id}" ${i === state.menus.length - 1 ? 'disabled' : ''} title="Descendre">↓</button>
+          <button data-act="addPlate" data-id="${m.id}" class="primary">+ Plat</button>
+          <button data-act="editMenu" data-id="${m.id}">Modifier</button>
+          <button data-act="delMenu" data-id="${m.id}" class="danger">Supprimer</button>
+        </div>
+      </div>
+      <div class="plates">
+        ${plates.length ? plates.map(p => `
+          <div class="plate ${p.available === false ? 'off' : ''}">
+            ${p.photo ? `<img src="${esc(p.photo)}" alt="">` : '<div class="noimg"></div>'}
+            <div class="info"><b>${esc(p.name)}</b> <span>– ${money(p.price)}</span>${p.available === false ? '<span class="tag">Épuisé</span>' : ''}
+              <small>${esc(p.desc)}</small></div>
+            <div class="row">
+              <button data-act="toggle" data-id="${p.id}">${p.available === false ? 'Remettre' : 'Épuisé'}</button>
+              <button data-act="editPlate" data-id="${p.id}">Modifier</button>
+              <button data-act="delPlate" data-id="${p.id}" class="danger">✕</button>
+            </div>
+          </div>`).join('') : '<div class="empty">Menu khawi. Zid l plat lowl b "+ Plat".</div>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+$('menus').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const id = b.dataset.id, act = b.dataset.act;
+  const menu = state.menus.find(m => m.id === id), plate = state.plates.find(p => p.id === id);
+  if (act === 'addPlate') plateForm(null, id);
+  if (act === 'editMenu') menuForm(menu);
+  if (act === 'editPlate') plateForm(plate);
+  if (act === 'toggle') DB.set('plates', id, { available: plate.available === false });
+  if (act === 'delPlate' && confirm(`Supprimer "${plate.name}" ?`)) DB.remove('plates', id);
+  if (act === 'delMenu' && confirm(`Supprimer le menu "${menu.name}" et tous ses plats ?`)) {
+    state.plates.filter(p => p.menuId === id).forEach(p => DB.remove('plates', p.id));
+    DB.remove('menus', id);
+  }
+  if (act === 'up' || act === 'down') {
+    const i = state.menus.findIndex(m => m.id === id), j = act === 'up' ? i - 1 : i + 1;
+    const arr = state.menus.slice(); [arr[i], arr[j]] = [arr[j], arr[i]];
+    arr.forEach((m, k) => { if (m.order !== k) DB.set('menus', m.id, { order: k }); });
+  }
+});
+$('btnAddMenu').onclick = () => menuForm(null);
+
+// ---------- modal ----------
+let onSave = null;
+function openModal(title, html, save) {
+  $('mTitle').textContent = title; $('mBody').innerHTML = html; onSave = save;
+  $('modalBg').classList.add('open');
+  const f = $('mBody').querySelector('input[type=text],input[type=number]'); if (f) f.focus();
+}
+function closeModal() { $('modalBg').classList.remove('open'); onSave = null; }
+$('mCancel').onclick = closeModal;
+$('modalBg').addEventListener('mousedown', e => { if (e.target === $('modalBg')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+$('mSave').onclick = async () => { if (onSave) { $('mSave').disabled = true; try { await onSave(); closeModal(); } finally { $('mSave').disabled = false; } } };
+
+function menuForm(m) {
+  openModal(m ? 'Modifier le menu' : 'Nouveau menu', `
+    <div class="field"><label>Nom du menu</label><input type="text" id="fName" value="${esc(m?.name)}" placeholder="ex: Boissons chaudes"></div>
+    <div class="field"><label>Couleur du menu (titre, prix, boutons)</label><input type="color" id="fAccent" value="${esc(m?.accent || state.settings.primary)}"></div>
+    <div class="field"><label class="check"><input type="checkbox" id="fUseBg" ${m?.bg ? 'checked' : ''}> Fond spécial pour ce menu</label></div>
+    <div class="field"><label>Couleur de fond du menu</label><input type="color" id="fBg" value="${esc(m?.bg || '#ffffff')}"></div>
+    <p class="hint">Ila ma 3chartich "Fond spécial", l menu kaykhdem b fond global dyal site.</p>`,
+  async () => {
+    const name = $('fName').value.trim(); if (!name) { alert('Kteb smiya dyal menu'); throw new Error('empty'); }
+    const data = { name, accent: $('fAccent').value, bg: $('fUseBg').checked ? $('fBg').value : '' };
+    if (m) await DB.set('menus', m.id, data);
+    else await DB.add('menus', { ...data, order: state.menus.length });
+  });
+}
+
+function plateForm(p, menuId) {
+  const mid = p?.menuId || menuId;
+  openModal(p ? 'Modifier le plat' : 'Nouveau plat', `
+    <div class="field"><label>Menu</label><select id="fMenu">${state.menus.map(m => `<option value="${m.id}" ${m.id === mid ? 'selected' : ''}>${esc(m.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Nom du plat</label><input type="text" id="fName" value="${esc(p?.name)}" placeholder="ex: Café crème"></div>
+    <div class="field"><label>Prix (DH)</label><input type="number" id="fPrice" min="0" step="0.5" value="${esc(p?.price ?? '')}"></div>
+    <div class="field"><label>Description (optionnel)</label><textarea id="fDesc">${esc(p?.desc)}</textarea></div>
+    <div class="field"><label>Photo (optionnel)</label>
+      ${p?.photo ? `<img id="fPrev" src="${esc(p.photo)}" class="logo-prev" alt="" style="margin-bottom:8px">` : ''}
+      <input type="file" id="fPhoto" accept="image/*"></div>
+    <div class="field"><label class="check"><input type="checkbox" id="fAvail" ${p?.available === false ? '' : 'checked'}> Disponible</label></div>`,
+  async () => {
+    const name = $('fName').value.trim(), price = parseFloat($('fPrice').value);
+    if (!name || isNaN(price)) { alert('Kteb smiya w taman'); throw new Error('invalid'); }
+    const data = { menuId: $('fMenu').value, name, price, desc: $('fDesc').value.trim(), available: $('fAvail').checked };
+    const file = $('fPhoto').files[0];
+    if (file) data.photo = await imageToDataURL(file);
+    if (p) await DB.set('plates', p.id, data);
+    else await DB.add('plates', { ...data, photo: data.photo || '', order: Date.now() });
+  });
+}
+
+// ---------- data (kaybda ghir mnin tdkhl b password) ----------
+requireLogin('dev', () => {
+  DB.listen('menus', a => { state.menus = a.sort((x, y) => (x.order || 0) - (y.order || 0)); renderMenus(); });
+  DB.listen('plates', a => { state.plates = a; renderMenus(); });
+  DB.listen('settings', a => { state.settings = { ...DEFAULT_SETTINGS, ...(a.find(x => x.id === 'site') || {}) }; renderSettings(); });
+});
+</script>
+</body>
+</html>
