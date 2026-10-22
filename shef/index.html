@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuisine – Commandes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="../firebase-config.js"></script>
+<script src="../common.js"></script>
+<style>
+  :root { --ink:#f3f4f7; --bg:#161a22; --card:#222836; --line:#323a4d; --new:#e5484d; --prep:#f0a020; --ready:#2fb36a; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter,system-ui,sans-serif; }
+  header { padding:14px 18px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; border-bottom:1px solid var(--line); }
+  header h1 { margin:0; font-size:18px; }
+  button { font:inherit; cursor:pointer; border:0; border-radius:10px; }
+  #sound { background:var(--card); color:var(--ink); padding:8px 14px; border:1px solid var(--line); }
+  #sound.on { background:var(--ready); border-color:var(--ready); color:#fff; }
+  main { padding:16px; display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); align-items:start; }
+  .empty { grid-column:1/-1; text-align:center; padding:70px 20px; opacity:.55; }
+  .order { background:var(--card); border-radius:14px; border-top:6px solid var(--new); padding:14px; }
+  .order.preparing { border-top-color:var(--prep); }
+  .order.ready { border-top-color:var(--ready); }
+  .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+  .top b { font-size:22px; }
+  .top small { opacity:.65; }
+  .badge { font-size:12px; font-weight:600; padding:3px 9px; border-radius:99px; background:var(--new); color:#fff; }
+  .preparing .badge { background:var(--prep); color:#1b1400; }
+  .ready .badge { background:var(--ready); }
+  ul { list-style:none; margin:0 0 10px; padding:0; }
+  li { display:flex; gap:10px; padding:5px 0; font-size:16px; border-bottom:1px dashed var(--line); }
+  li b { min-width:30px; }
+  .note { background:#3a3120; color:#ffd78a; border-radius:8px; padding:8px 10px; font-size:14px; margin-bottom:10px; }
+  .act { width:100%; padding:13px; font-weight:700; font-size:15px; color:#fff; background:var(--prep); }
+  .act.toReady { background:var(--ready); }
+  .act.toDone { background:#4b5878; }
+  .act.toPrep { background:var(--prep); color:#1b1400; }
+  .cancel { background:none; color:var(--ink); opacity:.5; font-size:12px; margin-top:8px; width:100%; padding:4px; }
+  button:focus-visible { outline:3px solid #fff; outline-offset:2px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Écran cuisine <small id="count" style="opacity:.6;font-weight:400"></small></h1>
+  <div><button id="sound">🔔 Activer le son</button> <button id="out" style="background:none;color:#aab;padding:8px 10px" onclick="logout()">Déconnexion</button></div>
+</header>
+<main id="list"><div class="empty">Aucune commande pour le moment.</div></main>
+
+<script>
+const $ = id => document.getElementById(id);
+const NEXT = {
+  new:       { to: 'preparing', label: 'Commencer la préparation', cls: 'toPrep' },
+  preparing: { to: 'ready',     label: 'Commande prête',           cls: 'toReady' },
+  ready:     { to: 'done',      label: 'Servie / terminer',        cls: 'toDone' }
+};
+const NAMES = { new: 'Nouvelle', preparing: 'En préparation', ready: 'Prête' };
+
+let soundOn = false, ctx = null, known = null;
+
+$('sound').onclick = () => {
+  soundOn = !soundOn;
+  $('sound').classList.toggle('on', soundOn);
+  $('sound').textContent = soundOn ? '🔔 Son activé' : '🔔 Activer le son';
+  if (soundOn) { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); beep(); }
+};
+function beep() {
+  if (!soundOn || !ctx) return;
+  [0, 0.22].forEach(t => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = 880; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.25, ctx.currentTime + t);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.18);
+    o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.2);
+  });
+}
+
+function timeStr(ts) { return new Date(ts).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
+
+function render(orders) {
+  const live = orders.filter(o => o.status !== 'done' && o.status !== 'cancelled').sort((a, b) => a.createdAt - b.createdAt);
+
+  const ids = new Set(orders.map(o => o.id));
+  if (known) { if (live.some(o => !known.has(o.id))) beep(); }
+  known = ids;
+
+  $('count').textContent = live.length ? `(${live.length})` : '';
+  if (!live.length) { $('list').innerHTML = '<div class="empty">Aucune commande pour le moment.</div>'; return; }
+  $('list').innerHTML = live.map(o => {
+    const n = NEXT[o.status] || NEXT.new;
+    return `<article class="order ${esc(o.status)}">
+      <div class="top"><b>Table ${esc(o.table)}</b><span><span class="badge">${NAMES[o.status] || 'Nouvelle'}</span> <small>${timeStr(o.createdAt)}</small></span></div>
+      <ul>${(o.items || []).map(i => `<li><b>${esc(i.qty)}×</b><span>${esc(i.name)}</span></li>`).join('')}</ul>
+      ${o.note ? `<div class="note">Remarque : ${esc(o.note)}</div>` : ''}
+      <button class="act ${n.cls}" data-id="${o.id}" data-to="${n.to}">${n.label}</button>
+      <button class="cancel" data-id="${o.id}" data-to="cancelled">Annuler la commande</button>
+    </article>`;
+  }).join('');
+}
+
+$('list').addEventListener('click', e => {
+  const b = e.target.closest('button[data-id]'); if (!b) return;
+  if (b.dataset.to === 'cancelled' && !confirm('Annuler cette commande ?')) return;
+  DB.set('orders', b.dataset.id, { status: b.dataset.to });
+});
+
+requireLogin('shef', () => DB.listen('orders', render));
+</script>
+</body>
+</html>
