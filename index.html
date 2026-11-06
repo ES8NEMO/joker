@@ -16,6 +16,7 @@
   <script src="common.js"></script>
 
   <link rel="stylesheet" href="assets/css/cafe-theme.css">
+  <link rel="stylesheet" href="assets/css/cafe-motion.css">
 </head>
 <body class="client-page grid">
 
@@ -42,54 +43,50 @@
           Préparé avec soin, servi avec le sourire.
         </div>
       </div>
-      <div class="hero-visual">
-        <img
-          src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1200&q=85"
-          alt="Café fraîchement préparé"
-          fetchpriority="high">
-        <div class="photo-caption">
-          <span>UN MOMENT POUR SOI</span>
-          <span>☕</span>
+    <div class="hero-visual coffee-scene" role="img" aria-label="Tasse de café Saada animée">
+
+  <div class="coffee-glow"></div>
+  <div class="coffee-orbit"></div>
+  <div class="coffee-orbit coffee-orbit-two"></div>
+
+  <div class="coffee-bean bean-one"></div>
+  <div class="coffee-bean bean-two"></div>
+  <div class="coffee-bean bean-three"></div>
+
+  <div class="coffee-cup-stage">
+
+    <div class="coffee-steam" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div class="coffee-cup">
+
+      <div class="cup-shadow"></div>
+      <div class="cup-saucer"></div>
+      <div class="cup-handle"></div>
+
+      <div class="cup-body">
+        <div class="cup-rim">
+          <div class="cup-liquid"></div>
+        </div>
+
+        <div class="cup-stamp">
+          <span>SAADA</span>
+          <small>CAFÉ</small>
         </div>
       </div>
-      <div class="hero-decoration" aria-hidden="true">S</div>
-    </section>
 
-    <section class="welcome-strip">
-      <span>CAFÉ DE QUALITÉ</span>
-      <span class="strip-star">✳</span>
-      <span>DOUCEURS GOURMANDES</span>
-      <span class="strip-star">✳</span>
-      <span>FAIT AVEC AMOUR</span>
-    </section>
-
-    <section class="menu-intro" id="menus">
-      <div>
-        <span class="eyebrow">À DÉGUSTER</span>
-        <h2>Notre carte<span>.</span></h2>
-      </div>
-      <p>Choisissez vos favoris et composez votre commande en quelques instants.</p>
-    </section>
-
-    <div class="status" id="status" role="status" aria-live="polite"></div>
-    <nav id="nav" aria-label="Catégories du menu"></nav>
-    <div id="menus"></div>
-
-    <section class="closing-note">
-      <span class="closing-icon">✳</span>
-      <p>Un café, une pause, un peu de bonheur.</p>
-      <span>À BIENTÔT CHEZ NOUS</span>
-    </section>
-  </main>
-
-  <div class="bar" id="bar">
-    <div class="bar-description">
-      <span class="bar-eyebrow">VOTRE SÉLECTION</span>
-      <span id="barCount"></span>
     </div>
-    <button id="barBtn" type="button">Voir ma commande <span>↗</span></button>
-    <strong id="barTotal"></strong>
   </div>
+
+  <div class="coffee-caption">
+    <span>FRAÎCHEMENT PRÉPARÉ</span>
+    <span>✳</span>
+  </div>
+
+</div>
 
   <div class="sheet-bg" id="sheetBg">
     <div class="sheet" role="dialog" aria-modal="true" aria-label="Ma commande">
@@ -367,5 +364,6 @@ DB.listen('plates', a => {
 applyTheme(DEFAULT_SETTINGS);
 watchOrder();
 </script>
+      <script src="assets/js/cafe-motion.js" defer></script>
 </body>
 </html>
