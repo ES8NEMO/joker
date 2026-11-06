@@ -1,112 +1,216 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#faf5ea">
-  <title>Saada Café</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#faf5ea">
+<title>Saada Café</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
-  <script src="common.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="common.js"></script>
 
-  <link rel="stylesheet" href="assets/css/cafe-theme.css">
-  <link rel="stylesheet" href="assets/css/cafe-motion.css">
+<link rel="stylesheet" href="assets/css/cafe-theme.css">
+<link rel="stylesheet" href="assets/css/cafe-motion.css">
 </head>
+
 <body class="client-page grid">
 
-  <header class="cafe-header">
-    <a class="brand" href="#" aria-label="Accueil">
-      <img id="logo" alt="Logo du café" style="display:none">
-      <span class="brand-copy">
-        <span class="brand-kicker">CAFÉ · BRUNCH · DOUCEURS</span>
-        <h1 id="name">Saada Café</h1>
-      </span>
+<!-- HEADER -->
+<header class="cafe-header">
+  <a class="brand" href="#" aria-label="Accueil">
+    <img id="logo" alt="Logo du café" style="display:none">
+    <span class="brand-copy">
+      <span class="brand-kicker">CAFÉ · BRUNCH · DOUCEURS</span>
+      <h1 id="name">Saada Café</h1>
+    </span>
+  </a>
+
+  <span class="table-pill" id="table" style="display:none"></span>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="hero-copy">
+    <span class="eyebrow">BIENVENUE CHEZ NOUS</span>
+
+    <h2>
+      Les petits plaisirs,<br>
+      les beaux moments<span>.</span>
+    </h2>
+
+    <p>
+      Un bon café, des saveurs généreuses et une pause qui fait du bien.
+      Installez-vous et découvrez notre carte.
+    </p>
+
+    <a class="hero-cta" href="#menus">
+      Découvrir la carte <span>↘</span>
     </a>
-    <span class="table-pill" id="table" style="display:none"></span>
-  </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">BIENVENUE CHEZ NOUS</span>
-        <h2>Les petits plaisirs,<br>les beaux moments<span>.</span></h2>
-        <p>Un bon café, des saveurs généreuses et une pause qui fait du bien. Installez-vous et découvrez notre carte.</p>
-        <a class="hero-cta" href="#menus">Découvrir la carte <span>↘</span></a>
-        <div class="hero-note">
-          <span class="hero-note-dot"></span>
-          Préparé avec soin, servi avec le sourire.
-        </div>
-      </div>
-    <div class="hero-visual coffee-scene" role="img" aria-label="Tasse de café Saada animée">
-
-  <div class="coffee-glow"></div>
-  <div class="coffee-orbit"></div>
-  <div class="coffee-orbit coffee-orbit-two"></div>
-
-  <div class="coffee-bean bean-one"></div>
-  <div class="coffee-bean bean-two"></div>
-  <div class="coffee-bean bean-three"></div>
-
-  <div class="coffee-cup-stage">
-
-    <div class="coffee-steam" aria-hidden="true">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-
-    <div class="coffee-cup">
-
-      <div class="cup-shadow"></div>
-      <div class="cup-saucer"></div>
-      <div class="cup-handle"></div>
-
-      <div class="cup-body">
-        <div class="cup-rim">
-          <div class="cup-liquid"></div>
-        </div>
-
-        <div class="cup-stamp">
-          <span>SAADA</span>
-          <small>CAFÉ</small>
-        </div>
-      </div>
-
+    <div class="hero-note">
+      <span class="hero-note-dot"></span>
+      Préparé avec soin, servi avec le sourire.
     </div>
   </div>
 
-  <div class="coffee-caption">
-    <span>FRAÎCHEMENT PRÉPARÉ</span>
-    <span>✳</span>
+  <!-- ANIMATED 3D COFFEE -->
+  <div class="hero-visual coffee-scene"
+       aria-label="Tasse de café Saada animée">
+
+    <div class="coffee-glow"></div>
+    <div class="coffee-orbit"></div>
+    <div class="coffee-orbit coffee-orbit-two"></div>
+
+    <div class="coffee-bean bean-one"></div>
+    <div class="coffee-bean bean-two"></div>
+    <div class="coffee-bean bean-three"></div>
+
+    <div class="coffee-cup-stage">
+
+      <div class="coffee-steam" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="coffee-cup">
+
+        <div class="cup-shadow"></div>
+        <div class="cup-saucer"></div>
+        <div class="cup-handle"></div>
+
+        <div class="cup-body">
+
+          <div class="cup-rim">
+            <div class="cup-liquid"></div>
+          </div>
+
+          <div class="cup-stamp">
+            <span>SAADA</span>
+            <small>CAFÉ</small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="coffee-caption">
+      <span>FRAÎCHEMENT PRÉPARÉ</span>
+      <span>✳</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- WELCOME STRIP -->
+<section class="welcome-strip">
+  <span>CAFÉ DE QUALITÉ</span>
+  <span class="strip-star">✳</span>
+  <span>DOUCEURS GOURMANDES</span>
+  <span class="strip-star">✳</span>
+  <span>FAIT AVEC AMOUR</span>
+</section>
+
+<!-- MENU INTRO -->
+<section class="menu-intro" id="menu-intro">
+  <div>
+    <span class="eyebrow">À DÉGUSTER</span>
+    <h2>Notre carte<span>.</span></h2>
   </div>
 
+  <p>
+    Choisissez vos favoris et composez votre commande en quelques instants.
+  </p>
+</section>
+
+<!-- ORDER STATUS -->
+<div class="status"
+     id="status"
+     role="status"
+     aria-live="polite"></div>
+
+<!-- MENU CATEGORIES -->
+<nav id="nav" aria-label="Catégories du menu"></nav>
+
+<!-- FIREBASE PRODUCTS -->
+<div id="menus"></div>
+
+<!-- FOOTER -->
+<section class="closing-note">
+  <span class="closing-icon">✳</span>
+  <p>Un café, une pause, un peu de bonheur.</p>
+  <span>À BIENTÔT CHEZ NOUS</span>
+</section>
+
+</main>
+
+<!-- CART BAR -->
+<div class="bar" id="bar">
+
+  <div class="bar-description">
+    <span class="bar-eyebrow">VOTRE SÉLECTION</span>
+    <span id="barCount"></span>
+  </div>
+
+  <button id="barBtn" type="button">
+    Voir ma commande ↗
+  </button>
+
+  <strong id="barTotal"></strong>
 </div>
 
-  <div class="sheet-bg" id="sheetBg">
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Ma commande">
-      <div class="sheet-handle"></div>
-      <span class="eyebrow">PLUS QU'UN INSTANT</span>
-      <h3>Votre commande<span>.</span></h3>
-      <div id="lines"></div>
-      <div class="total">
-        <span>Total</span>
-        <span id="total"></span>
-      </div>
-      <label class="note-label" for="note">Une demande particulière ?</label>
-      <textarea id="note" placeholder="Ex. : sans sucre, lait à part…"></textarea>
-      <button class="send" id="send" type="button">Envoyer la commande <span>↗</span></button>
-      <button class="close-sheet" id="close" type="button">Continuer mes choix</button>
+<!-- CART MODAL -->
+<div class="sheet-bg" id="sheetBg">
+
+  <div class="sheet"
+       role="dialog"
+       aria-modal="true"
+       aria-label="Ma commande">
+
+    <div class="sheet-handle"></div>
+
+    <span class="eyebrow">PLUS QU'UN INSTANT</span>
+
+    <h3>Votre commande<span>.</span></h3>
+
+    <div id="lines"></div>
+
+    <div class="total">
+      <span>Total</span>
+      <span id="total"></span>
     </div>
+
+    <label class="note-label" for="note">
+      Une demande particulière ?
+    </label>
+
+    <textarea id="note"
+      placeholder="Ex. : sans sucre, lait à part..."></textarea>
+
+    <button class="send" id="send" type="button">
+      Envoyer la commande <span>↗</span>
+    </button>
+
+    <button class="close-sheet" id="close" type="button">
+      Continuer mes choix
+    </button>
+
   </div>
+</div>
 
 <script>
 const $ = id => document.getElementById(id);
+
 const TABLE = PARAMS.get('table') || '';
 const LS_KEY = `lastOrder_${CAFE_ID}_${TABLE}`;
 
@@ -122,60 +226,101 @@ if (TABLE) {
   $('table').textContent = 'Table ' + TABLE;
 }
 
+// HEADER
 function renderHeader() {
   const s = applyTheme(state.settings);
+
   $('name').textContent = s.name || 'Saada Café';
   document.title = (s.name || 'Saada Café') + ' — Notre carte';
+
   $('logo').style.display = s.logo ? '' : 'none';
-  if (s.logo) $('logo').src = s.logo;
+
+  if (s.logo) {
+    $('logo').src = s.logo;
+  }
 }
 
+// PRODUCT CARD
 function itemHTML(p) {
+
   const q = state.cart[p.id] || 0;
   const off = p.available === false;
 
   return `
     <article class="item ${off ? 'off' : ''} ${p.photo ? '' : 'nophoto'}">
+
       ${p.photo
-        ? `<img class="ph" src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
-        : '<div class="item-placeholder" aria-hidden="true">✳</div>'}
+        ? `<img class="ph"
+                src="${esc(p.photo)}"
+                alt="${esc(p.name)}"
+                loading="lazy">`
+        : '<div class="item-placeholder">✳</div>'}
+
       <div class="body">
+
         <div class="item-copy">
           <b>${esc(p.name)}</b>
           ${p.desc ? `<p>${esc(p.desc)}</p>` : ''}
         </div>
+
         <div class="foot">
+
           <span class="price">${money(p.price)}</span>
+
           ${off
             ? '<span class="soldout">Indisponible</span>'
+
             : q
-              ? `<div class="qty">
-                   <button data-m="${esc(p.id)}" aria-label="Retirer un article">−</button>
-                   <span>${q}</span>
-                   <button data-p="${esc(p.id)}" aria-label="Ajouter un article">+</button>
-                 </div>`
-              : `<button class="add" data-p="${esc(p.id)}">Ajouter <span>+</span></button>`}
+              ? `
+                <div class="qty">
+                  <button data-m="${esc(p.id)}">−</button>
+                  <span>${q}</span>
+                  <button data-p="${esc(p.id)}">+</button>
+                </div>
+              `
+
+              : `
+                <button class="add" data-p="${esc(p.id)}">
+                  Ajouter <span>+</span>
+                </button>
+              `
+          }
+
         </div>
       </div>
-    </article>`;
+    </article>
+  `;
 }
 
+// RENDER MENUS
 function renderMenus() {
+
   const shown = state.menus.filter(m =>
     state.plates.some(p => p.menuId === m.id)
   );
 
-  document.body.classList.toggle('grid', state.settings.layout !== 'list');
-  document.body.classList.toggle('list', state.settings.layout === 'list');
+  document.body.classList.toggle(
+    'grid',
+    state.settings.layout !== 'list'
+  );
+
+  document.body.classList.toggle(
+    'list',
+    state.settings.layout === 'list'
+  );
 
   if (!shown.length) {
+
     $('nav').innerHTML = '';
+
     $('menus').innerHTML = `
       <div class="empty-menu">
         <span>☕</span>
         <h3>Notre carte se prépare</h3>
         <p>Les articles seront disponibles ici très bientôt.</p>
-      </div>`;
+      </div>
+    `;
+
     return;
   }
 
@@ -183,187 +328,353 @@ function renderMenus() {
     <a href="#m-${esc(m.id)}"
        style="--c:${esc(m.accent || state.settings.primary)}">
        ${esc(m.name)}
-    </a>`).join('');
+    </a>
+  `).join('');
 
   $('menus').innerHTML = shown.map(m => {
+
     const plates = state.plates
       .filter(p => p.menuId === m.id)
       .sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return `
-      <section class="menu" id="m-${esc(m.id)}"
-        style="--c:${esc(m.accent || state.settings.primary)};
-        ${m.bg ? `--mbg:${esc(m.bg)};` : ''}">
+      <section class="menu"
+               id="m-${esc(m.id)}"
+               style="
+                 --c:${esc(m.accent || state.settings.primary)};
+                 ${m.bg ? `--mbg:${esc(m.bg)};` : ''}
+               ">
+
         <div class="menu-heading">
+
           <span class="menu-mark">✳</span>
+
           <div>
             <span class="menu-kicker">NOTRE SÉLECTION</span>
             <h2>${esc(m.name)}<span>.</span></h2>
           </div>
+
         </div>
-        <div class="items">${plates.map(itemHTML).join('')}</div>
-      </section>`;
+
+        <div class="items">
+          ${plates.map(itemHTML).join('')}
+        </div>
+
+      </section>
+    `;
+
   }).join('');
 }
 
+// CART LINES
 function cartLines() {
+
   return Object.entries(state.cart)
     .map(([id, qty]) => ({
       p: state.plates.find(x => x.id === id),
       qty
     }))
     .filter(l => l.p && l.p.available !== false);
+
 }
 
+// RENDER CART
 function renderCart() {
+
   const lines = cartLines();
-  const count = lines.reduce((n, l) => n + l.qty, 0);
-  const total = lines.reduce((n, l) => n + l.qty * l.p.price, 0);
+
+  const count = lines.reduce(
+    (n, l) => n + l.qty, 0
+  );
+
+  const total = lines.reduce(
+    (n, l) => n + l.qty * l.p.price, 0
+  );
 
   $('bar').classList.toggle('show', count > 0);
-  $('barCount').textContent = count + (count > 1 ? ' articles' : ' article');
+
+  $('barCount').textContent =
+    count + (count > 1 ? ' articles' : ' article');
+
   $('barTotal').textContent = money(total);
   $('total').textContent = money(total);
 
   $('lines').innerHTML = lines.map(l => `
     <div class="line">
+
       <div class="line-info">
         <b>${esc(l.p.name)}</b>
         <small>${money(l.p.price)} / unité</small>
       </div>
-      <div class="qty">
-        <button data-m="${esc(l.p.id)}" aria-label="Retirer un article">−</button>
-        <span>${l.qty}</span>
-        <button data-p="${esc(l.p.id)}" aria-label="Ajouter un article">+</button>
-      </div>
-    </div>`).join('');
 
-  if (!count) $('sheetBg').classList.remove('open');
+      <div class="qty">
+        <button data-m="${esc(l.p.id)}">−</button>
+        <span>${l.qty}</span>
+        <button data-p="${esc(l.p.id)}">+</button>
+      </div>
+
+    </div>
+  `).join('');
+
+  if (!count) {
+    $('sheetBg').classList.remove('open');
+  }
 }
 
+// CHANGE QUANTITY
 function change(id, delta) {
+
   const n = (state.cart[id] || 0) + delta;
-  if (n <= 0) delete state.cart[id];
-  else state.cart[id] = n;
+
+  if (n <= 0) {
+    delete state.cart[id];
+  } else {
+    state.cart[id] = n;
+  }
 
   renderMenus();
   renderCart();
 }
 
+// BUTTON EVENTS
 document.addEventListener('click', e => {
+
   const b = e.target.closest('button');
+
   if (!b) return;
 
-  if (b.dataset.p) change(b.dataset.p, 1);
-  if (b.dataset.m) change(b.dataset.m, -1);
+  if (b.dataset.p) {
+    change(b.dataset.p, 1);
+  }
+
+  if (b.dataset.m) {
+    change(b.dataset.m, -1);
+  }
+
 });
 
-$('barBtn').onclick = () => $('sheetBg').classList.add('open');
-$('close').onclick = () => $('sheetBg').classList.remove('open');
+// OPEN AND CLOSE CART
+$('barBtn').onclick = () => {
+  $('sheetBg').classList.add('open');
+};
+
+$('close').onclick = () => {
+  $('sheetBg').classList.remove('open');
+};
 
 $('sheetBg').addEventListener('mousedown', e => {
+
   if (e.target === $('sheetBg')) {
     $('sheetBg').classList.remove('open');
   }
+
 });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') $('sheetBg').classList.remove('open');
+
+  if (e.key === 'Escape') {
+    $('sheetBg').classList.remove('open');
+  }
+
 });
 
+// SEND ORDER
 $('send').onclick = async () => {
+
   const lines = cartLines();
+
   if (!lines.length) return;
 
   $('send').disabled = true;
 
   try {
+
     const order = {
       table: TABLE || '?',
+
       items: lines.map(l => ({
         name: l.p.name,
         price: l.p.price,
         qty: l.qty
       })),
-      total: lines.reduce((n, l) => n + l.qty * l.p.price, 0),
+
+      total: lines.reduce(
+        (n, l) => n + l.qty * l.p.price, 0
+      ),
+
       note: $('note').value.trim(),
+
       status: 'new',
       createdAt: Date.now()
     };
 
     const id = await DB.add('orders', order);
+
     localStorage.setItem(LS_KEY, id);
 
     state.cart = {};
     $('note').value = '';
+
     renderMenus();
     renderCart();
     watchOrder();
 
     $('sheetBg').classList.remove('open');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
   } catch (err) {
+
     console.error(err);
+
     alert('Erreur : la commande n’a pas été envoyée. Réessayez.');
+
   } finally {
+
     $('send').disabled = false;
+
   }
+
 };
 
+// ORDER TRACKING
 let unwatch = null;
 
 const LABELS = {
-  new: ['Commande envoyée', 'En attente de confirmation par la cuisine.'],
-  preparing: ['En préparation', 'Votre commande est en cours de préparation.'],
-  ready: ['Prête !', 'Votre commande arrive à votre table.'],
-  done: ['Servie', 'Bon appétit !'],
-  cancelled: ['Commande annulée', 'Veuillez vous adresser au serveur.']
+  new: [
+    'Commande envoyée',
+    'En attente de confirmation par la cuisine.'
+  ],
+
+  preparing: [
+    'En préparation',
+    'Votre commande est en cours de préparation.'
+  ],
+
+  ready: [
+    'Prête !',
+    'Votre commande arrive à votre table.'
+  ],
+
+  done: [
+    'Servie',
+    'Bon appétit !'
+  ],
+
+  cancelled: [
+    'Commande annulée',
+    'Veuillez vous adresser au serveur.'
+  ]
 };
 
 function watchOrder() {
+
   const id = localStorage.getItem(LS_KEY);
+
   if (!id) return;
 
   if (unwatch) unwatch();
 
   unwatch = DB.listenDoc('orders', id, o => {
+
     const box = $('status');
 
     if (!o || o.status === 'done') {
+
       box.classList.remove('show');
-      if (o) localStorage.removeItem(LS_KEY);
+
+      if (o) {
+        localStorage.removeItem(LS_KEY);
+      }
+
       return;
     }
 
-    const [title, description] = LABELS[o.status] || LABELS.new;
-    box.innerHTML = `<b>${esc(title)}</b><span>${esc(description)}</span>`;
+    const [title, description] =
+      LABELS[o.status] || LABELS.new;
+
+    box.innerHTML = `
+      <b>${esc(title)}</b>
+      <span>${esc(description)}</span>
+    `;
+
     box.classList.add('show');
+
   });
+
 }
 
+// FIREBASE DATA
 DB.listen('settings', a => {
+
   state.settings = {
     ...DEFAULT_SETTINGS,
     ...(a.find(x => x.id === 'site') || {})
   };
+
   renderHeader();
   renderMenus();
+
 });
 
 DB.listen('menus', a => {
-  state.menus = a.sort((x, y) => (x.order || 0) - (y.order || 0));
+
+  state.menus = a.sort(
+    (x, y) => (x.order || 0) - (y.order || 0)
+  );
+
   renderMenus();
+
 });
 
 DB.listen('plates', a => {
+
   state.plates = a;
+
   renderMenus();
   renderCart();
+
 });
 
+// INITIALIZE
 applyTheme(DEFAULT_SETTINGS);
 watchOrder();
+
+// COFFEE 3D MOUSE INTERACTION
+const scene = document.querySelector('.coffee-scene');
+const stage = document.querySelector('.coffee-cup-stage');
+
+if (
+  scene &&
+  stage &&
+  window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+  !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+) {
+
+  scene.addEventListener('pointermove', e => {
+
+    const rect = scene.getBoundingClientRect();
+
+    const x = (e.clientX - rect.left) / rect.width - .5;
+    const y = (e.clientY - rect.top) / rect.height - .5;
+
+    stage.style.setProperty('--tilt-y', `${x * 9}deg`);
+    stage.style.setProperty('--tilt-x', `${-y * 7}deg`);
+
+  });
+
+  scene.addEventListener('pointerleave', () => {
+
+    stage.style.setProperty('--tilt-y', '0deg');
+    stage.style.setProperty('--tilt-x', '0deg');
+
+  });
+
+}
 </script>
-      <script src="assets/js/cafe-motion.js" defer></script>
+
 </body>
 </html>
