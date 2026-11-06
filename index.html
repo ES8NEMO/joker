@@ -470,6 +470,43 @@ $('sheetBg').addEventListener('mousedown', e => {
 
 });
 
+/* Close shopping cart by swiping down */
+
+const cartSheet = document.querySelector('#sheetBg .sheet');
+
+let touchStartY = 0;
+let touchStartX = 0;
+let touchStartedAtTop = false;
+
+cartSheet.addEventListener('touchstart', e => {
+  const touch = e.touches[0];
+
+  touchStartY = touch.clientY;
+  touchStartX = touch.clientX;
+
+  // Only dismiss when the sheet is at the top
+  touchStartedAtTop = cartSheet.scrollTop <= 0;
+
+}, { passive: true });
+
+cartSheet.addEventListener('touchend', e => {
+
+  if (!touchStartedAtTop) return;
+
+  const touch = e.changedTouches[0];
+
+  const deltaY = touch.clientY - touchStartY;
+  const deltaX = Math.abs(touch.clientX - touchStartX);
+
+  // Swipe down more than 90px to close
+  if (deltaY > 90 && deltaY > deltaX * 1.2) {
+    $('sheetBg').classList.remove('open');
+  }
+
+  touchStartedAtTop = false;
+
+}, { passive: true });
+
 document.addEventListener('keydown', e => {
 
   if (e.key === 'Escape') {
