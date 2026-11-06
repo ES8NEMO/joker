@@ -1,0 +1,397 @@
+
+/* Saada Café — CSS 3D + Animations */
+
+.client-page .hero-visual.coffee-scene {
+  position: relative;
+  min-width: 0;
+  min-height: 370px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 48% 48% 5px 5px;
+  background:
+    radial-gradient(ellipse at 50% 46%, rgba(255,253,248,.98) 0 17%, rgba(240,230,213,.72) 48%, rgba(229,218,200,.28) 72%, transparent 73%),
+    linear-gradient(145deg, #f4ead8, #e9dcc5);
+}
+
+.client-page .coffee-glow {
+  position: absolute;
+  width: 76%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.78), transparent 68%);
+  z-index: -1;
+}
+
+.client-page .coffee-orbit {
+  position: absolute;
+  width: 78%;
+  height: 34%;
+  border: 1px solid rgba(176,85,62,.22);
+  border-radius: 50%;
+  transform: rotate(-19deg);
+  pointer-events: none;
+}
+
+.client-page .coffee-orbit-two {
+  width: 91%;
+  height: 45%;
+  border-color: rgba(104,118,77,.18);
+  transform: rotate(24deg);
+}
+
+.client-page .coffee-cup-stage {
+  position: relative;
+  z-index: 2;
+  width: min(310px, 82%);
+  height: 305px;
+  display: grid;
+  place-items: center;
+  transform: perspective(900px)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg))
+    translateY(var(--scroll-y, 0px));
+  transform-style: preserve-3d;
+  transition: transform .22s ease-out;
+}
+
+.client-page .coffee-cup {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  transform: rotate(-4deg);
+  transform-style: preserve-3d;
+  animation: saada-cup-float 5s ease-in-out infinite;
+}
+
+.client-page .cup-shadow {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 10px;
+  height: 23px;
+  border-radius: 50%;
+  background: rgba(65,45,29,.18);
+  filter: blur(10px);
+  transform: translateZ(-12px);
+}
+
+.client-page .cup-saucer {
+  position: absolute;
+  z-index: 1;
+  left: 18px;
+  bottom: 17px;
+  width: 215px;
+  height: 34px;
+  border: 2px solid #d6c4a7;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fffdf8, #e8dcc8 90%);
+  box-shadow: 0 9px 12px rgba(70,48,29,.13),
+              inset 0 3px 4px rgba(255,255,255,.9);
+  transform: rotateX(58deg);
+}
+
+.client-page .cup-handle {
+  position: absolute;
+  z-index: 1;
+  top: 77px;
+  right: 7px;
+  width: 76px;
+  height: 91px;
+  border: 17px solid #d8c6aa;
+  border-left-width: 13px;
+  border-radius: 48%;
+  background: transparent;
+  box-shadow: inset -4px 2px 5px rgba(91,62,40,.12),
+              4px 3px 5px rgba(91,62,40,.10);
+  transform: rotate(7deg) translateZ(-8px);
+}
+
+.client-page .cup-body {
+  position: absolute;
+  z-index: 3;
+  top: 67px;
+  left: 28px;
+  width: 174px;
+  height: 145px;
+  border: 1px solid #d7c5aa;
+  border-top: 0;
+  border-radius: 10px 10px 48px 48px;
+  background: linear-gradient(100deg,
+    #fffdf8 0%, #f8f1e5 35%,
+    #e7d9c3 73%, #fffaf0 100%);
+  box-shadow: inset 9px 0 13px rgba(255,255,255,.85),
+              inset -12px -8px 17px rgba(114,81,51,.10),
+              9px 14px 19px rgba(72,48,29,.12);
+  transform: rotateX(-5deg);
+}
+
+.client-page .cup-rim {
+  position: absolute;
+  top: -11px;
+  left: -4px;
+  width: 182px;
+  height: 30px;
+  border: 3px solid #e4d4bd;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fffdf8, #d9c7a9);
+  box-shadow: 0 3px 5px rgba(73,50,31,.12);
+}
+
+.client-page .cup-liquid {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  right: 4px;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 44% 35%,
+    #9c6341 0 13%, #60351f 43%, #382015 100%);
+  box-shadow: inset 0 2px 4px rgba(255,218,158,.25);
+}
+
+.client-page .cup-liquid::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 27px;
+  width: 45px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(241,204,150,.28);
+  transform: rotate(-15deg);
+}
+
+.client-page .cup-stamp {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #a4513c;
+  line-height: 1.05;
+  transform: translateZ(3px);
+}
+
+.client-page .cup-stamp span {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  letter-spacing: .12em;
+}
+
+.client-page .cup-stamp small {
+  margin-top: 5px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: .35em;
+}
+
+/* Coffee steam */
+
+.client-page .coffee-steam {
+  position: absolute;
+  z-index: 4;
+  top: 5px;
+  left: 50%;
+  width: 110px;
+  height: 85px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.client-page .coffee-steam span {
+  position: absolute;
+  bottom: 0;
+  width: 15px;
+  height: 58px;
+  border-left: 3px solid rgba(255,255,255,.88);
+  border-radius: 50%;
+  filter: drop-shadow(0 1px 1px rgba(129,94,62,.13));
+  animation: saada-steam 2.8s ease-in-out infinite;
+}
+
+.client-page .coffee-steam span:nth-child(1) {
+  left: 22px;
+  height: 48px;
+  animation-delay: -.5s;
+}
+
+.client-page .coffee-steam span:nth-child(2) {
+  left: 49px;
+  height: 68px;
+  animation-delay: -.1s;
+}
+
+.client-page .coffee-steam span:nth-child(3) {
+  left: 76px;
+  height: 46px;
+  animation-delay: -.9s;
+}
+
+/* Floating coffee beans */
+
+.client-page .coffee-bean {
+  position: absolute;
+  z-index: 2;
+  width: 23px;
+  height: 15px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #98603e, #4b2b1d 72%);
+  box-shadow: 2px 4px 7px rgba(65,40,25,.20);
+  transform: rotate(-28deg);
+  animation: saada-bean-float 4.5s ease-in-out infinite;
+}
+
+.client-page .coffee-bean::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 11px;
+  width: 2px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(255,224,185,.55);
+  transform: rotate(20deg);
+}
+
+.client-page .bean-one {
+  top: 24%;
+  left: 12%;
+}
+
+.client-page .bean-two {
+  top: 65%;
+  right: 10%;
+  width: 18px;
+  height: 12px;
+  animation-delay: -1.5s;
+}
+
+.client-page .bean-three {
+  top: 18%;
+  right: 17%;
+  width: 15px;
+  height: 10px;
+  animation-delay: -2.4s;
+}
+
+.client-page .coffee-caption {
+  position: absolute;
+  z-index: 5;
+  right: 15px;
+  bottom: 12px;
+  left: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #73634e;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .15em;
+}
+
+.client-page .coffee-caption span:last-child {
+  color: var(--terracotta);
+  font-size: 18px;
+}
+
+/* Animations */
+
+@keyframes saada-cup-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(-2deg);
+  }
+}
+
+@keyframes saada-steam {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scaleX(.8) skewX(-9deg);
+  }
+  35% { opacity: .9; }
+  100% {
+    opacity: 0;
+    transform: translateY(-23px) scaleX(1.35) skewX(12deg);
+  }
+}
+
+@keyframes saada-bean-float {
+  0%, 100% {
+    translate: 0 0;
+    rotate: -8deg;
+  }
+  50% {
+    translate: 0 -10px;
+    rotate: 8deg;
+  }
+}
+
+/* Scroll reveal */
+
+.motion-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s ease,
+              transform .7s cubic-bezier(.2,.7,.2,1);
+}
+
+.motion-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-ready #menus .item[data-reveal]:nth-child(2) {
+  transition-delay: .08s;
+}
+
+.motion-ready #menus .item[data-reveal]:nth-child(3) {
+  transition-delay: .16s;
+}
+
+.motion-ready #menus .item[data-reveal]:nth-child(4) {
+  transition-delay: .22s;
+}
+
+/* Phone */
+
+@media (max-width: 600px) {
+  .client-page .hero-visual.coffee-scene {
+    min-height: 310px;
+    border-radius: 48% 48% 5px 5px;
+  }
+
+  .client-page .coffee-cup-stage {
+    transform: perspective(900px) scale(.88)
+      rotateX(var(--tilt-x, 0deg))
+      rotateY(var(--tilt-y, 0deg))
+      translateY(var(--scroll-y, 0px));
+  }
+
+  .client-page .coffee-caption {
+    font-size: 8px;
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .client-page .coffee-cup,
+  .client-page .coffee-steam span,
+  .client-page .coffee-bean {
+    animation: none !important;
+  }
+
+  .motion-ready [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
