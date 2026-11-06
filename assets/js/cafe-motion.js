@@ -7,8 +7,8 @@
   const reduceMotion =
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const revealSelector =
-    '.hero-copy, .welcome-strip, .menu-intro, .menu-heading, #menus .item, .closing-note';
+ const revealSelector =
+    '.hero-copy, .welcome-strip, .menu-intro, .closing-note';
 
   function markRevealElements(root = document) {
     if (root.nodeType === 1 && root.matches?.(revealSelector)) {
@@ -141,3 +141,18 @@
     }, { passive: true });
   }
 })();
+/* FIX: Always keep Firebase menu products visible */
+
+.client-page #menus,
+.client-page #menus .menu,
+.client-page #menus .menu-heading,
+.client-page #menus .item,
+.client-page #menus .items {
+  visibility: visible !important;
+}
+
+.client-page #menus [data-reveal] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
