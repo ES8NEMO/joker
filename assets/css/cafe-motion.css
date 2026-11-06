@@ -356,3 +356,152 @@
     transition: none !important;
   }
 }
+
+/* =====================================
+   SAADA CAFE - PROFESSIONAL CART MOTION
+   ===================================== */
+
+.client-page .sheet-bg {
+  display: flex !important;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+
+  background: rgba(30, 25, 20, 0.58);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  overscroll-behavior: contain;
+
+  transition:
+    opacity .32s ease,
+    visibility 0s linear .38s;
+}
+
+.client-page .sheet-bg.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transition:
+    opacity .32s ease,
+    visibility 0s;
+}
+
+.client-page .sheet {
+  width: 100%;
+  max-width: 540px;
+  max-height: min(88vh, 750px);
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  transform: translate3d(0, 105%, 0);
+
+  transition:
+    transform .38s cubic-bezier(.22, 1, .36, 1);
+
+  will-change: transform;
+}
+
+.client-page .sheet-bg.open .sheet {
+  transform: translate3d(0, 0, 0);
+}
+
+.client-page .sheet-bg.dragging .sheet {
+  transition: none !important;
+  user-select: none;
+}
+
+/* Drag handle */
+
+.client-page .sheet-handle {
+  width: 70px;
+  height: 35px;
+  margin: 0 auto 12px;
+  padding: 12px 0;
+
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.client-page .sheet-handle::after {
+  content: "";
+  display: block;
+
+  width: 44px;
+  height: 4px;
+  margin: auto;
+
+  border-radius: 20px;
+  background: #cbbda8;
+}
+
+.client-page .sheet-handle:active {
+  cursor: grabbing;
+}
+
+/* Desktop and large tablets */
+
+@media (min-width: 700px) {
+  .client-page .sheet-bg {
+    align-items: center;
+  }
+
+  .client-page .sheet {
+    border-radius: 8px;
+    max-height: min(82vh, 750px);
+    transform: translate3d(0, 35px, 0);
+  }
+
+  .client-page .sheet-bg.open .sheet {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 699px) {
+  .client-page .sheet-bg {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .client-page .sheet {
+    max-height: 88dvh;
+    border-radius: 18px 18px 0 0;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent background page movement */
+
+html.cart-locked,
+html.cart-locked body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+.client-page .sheet-bg,
+.client-page .sheet {
+  overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-page .sheet,
+  .client-page .sheet-bg {
+    transition-duration: .01ms !important;
+  }
+}
